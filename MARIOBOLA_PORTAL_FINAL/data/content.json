@@ -1,0 +1,109 @@
+{
+  "notices": [
+    "UPDATE INFO: Untuk Kemenangan para member dapat di lihat pada bagian Gallery Kemenangan"
+  ],
+  "streams": [
+    {
+      "title": "LIVE CHANNEL 01",
+      "desc": "Streaming utama",
+      "url": "https://shortq.org/nonton-bola",
+      "image": "assets/streaming/channel-01.jpg"
+    },
+    {
+      "title": "LIVE CHANNEL 02",
+      "desc": "Channel cadangan",
+      "url": "https://shortq.org/nonton-bola",
+      "image": "assets/streaming/channel-02.jpg"
+    },
+    {
+      "title": "LIVE CHANNEL 03",
+      "desc": "Event live",
+      "url": "https://shortq.org/nonton-bola",
+      "image": "assets/streaming/channel-03.jpg"
+    },
+    {
+      "title": "LIVE CHANNEL 04",
+      "desc": "Alternative stream",
+      "url": "https://shortq.org/nonton-bola",
+      "image": "assets/streaming/channel-04.jpg"
+    }
+  ],
+  "gallery": [
+    {
+      "title": "Kemenangan Member 01",
+      "image": "assets/gallery/kemenangan-01.jpg"
+    },
+    {
+      "title": "Kemenangan Member 02",
+      "image": "assets/gallery/kemenangan-02.jpg"
+    },
+    {
+      "title": "Kemenangan Member 03",
+      "image": "assets/gallery/kemenangan-03.jpg"
+    },
+    {
+      "title": "Kemenangan Member 04",
+      "image": "assets/gallery/kemenangan-04.jpg"
+    }
+  ],
+  "events": [
+    {
+      "date": "UPDATE",
+      "title": "Event MARIOBOLA",
+      "desc": "Ganti judul, tanggal dan keterangan event di file data/content.json."
+    },
+    {
+      "date": "UPDATE",
+      "title": "Event Berikutnya",
+      "desc": "Upload gambar event ke assets/events lalu ubah path gambarnya di file data/content.json."
+    }
+  ],
+  "socials": [
+    {
+      "name": "Facebook",
+      "icon": "f",
+      "url": "https://facebook.com/akunmu"
+    },
+    {
+      "name": "X / Twitter",
+      "icon": "𝕏",
+      "url": "https://x.com/akunmu"
+    },
+    {
+      "name": "Instagram",
+      "icon": "◎",
+      "url": "https://instagram.com/akunmu"
+    },
+    {
+      "name": "YouTube",
+      "icon": "▶",
+      "url": "https://youtube.com/@akunmu"
+    },
+    {
+      "name": "TikTok",
+      "icon": "♪",
+      "url": "https://tiktok.com/@akunmu"
+    }
+  ],
+  "links": {
+    "loginUrl": "https://contoh-domain-utama.com/login",
+    "alternatives": [
+      {
+        "label": "Link Utama",
+        "url": "https://contoh-domain-utama.com"
+      },
+      {
+        "label": "Alternatif 1",
+        "url": "https://alternatif-1.com"
+      },
+      {
+        "label": "Alternatif 2",
+        "url": "https://alternatif-2.com"
+      },
+      {
+        "label": "Alternatif 3",
+        "url": "https://alternatif-3.com"
+      }
+    ]
+  }
+}
