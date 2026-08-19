@@ -105,61 +105,78 @@ function normalizeLogoName(value){
     .replace(/[\u0300-\u036f]/g,'')
     .toLowerCase()
     .replace(/\.(png|jpg|jpeg|webp)$/i,'')
-    .replace(/[^a-z0-9]+/g,' ')
+    .replace(/[_-]+/g,' ')
+    .replace(/[^a-z0-9 ]+/g,' ')
     .replace(/\s+/g,' ')
     .trim();
 }
 
 function findTeamLogo(team){
-  const original = String(team || '').trim();
-  if(!original) return '';
+  const teamName = normalizeLogoName(team);
 
-  const teamNormalized = normalizeLogoName(original);
+  if(!teamName){
+    return '';
+  }
 
   /*
-    1. Cek alias dari team-logos.json
+    ALIAS
+    Contoh:
+    "Internazionale" -> "inter milan"
+    jika nanti diperlukan.
   */
-  let aliases = teamLogoMap[original];
+  let searchNames = [teamName];
 
-  if(!Array.isArray(aliases)){
-    const foundKey = Object.keys(teamLogoMap).find(
-      key => normalizeLogoName(key) === teamNormalized
-    );
+  for(const [alias, value] of Object.entries(teamLogoMap || {})){
+    if(normalizeLogoName(alias) === teamName){
 
-    if(foundKey){
-      aliases = teamLogoMap[foundKey];
+      if(Array.isArray(value)){
+        searchNames.push(...value.map(normalizeLogoName));
+      }else{
+        searchNames.push(normalizeLogoName(value));
+      }
     }
   }
 
-  if(!Array.isArray(aliases)){
-    aliases = [];
-  }
-
   /*
-    Nama tim asli juga ikut dicari.
+    Hapus duplikat.
   */
-  const searchTerms = [
-    original,
-    ...aliases
-  ]
-  .map(normalizeLogoName)
-  .filter(Boolean);
+  searchNames = [...new Set(searchNames.filter(Boolean))];
 
   /*
-    2. Cari file yang mengandung nama tim.
+    Cari filename logo berdasarkan unsur nama tim.
   */
   for(const file of teamFiles){
+
     const fileName = normalizeLogoName(file);
 
-    for(const term of searchTerms){
-      if(fileName.includes(term)){
+    for(const searchName of searchNames){
+
+      /*
+        Contoh:
+
+        team:
+        Thailand
+
+        filename:
+        thailand_128x128.football-logos.cc.png
+
+        setelah normalize:
+
+        thailand 128x128 football logos cc
+
+        Karena filename mengandung "thailand",
+        maka logo ditemukan.
+      */
+      if(fileName.includes(searchName)){
         return `assets/teams/${file}`;
       }
     }
   }
 
   return '';
-}function teamLogo(team){
+}
+
+function teamLogo(team){
   return findTeamLogo(team);
 }
   function normalizeTeamName(name){
@@ -179,34 +196,7 @@ function findTeamLogo(team){
 }
 function fmtDate(d){const [y,m,day]=d.split('-').map(Number);return new Date(y,m-1,day).toLocaleDateString('id-ID',{weekday:'short',day:'2-digit',month:'short'});}
 function parseSchedule(text){let league='Lainnya',out=[]; for(const raw of text.split(/\r?\n/)){const line=raw.trim(); if(!line) continue; const m=line.match(/^(\d{2})\/(\d{2})\s+(\d{2}:\d{2})\s+(.+?)\s+VS\s+(.+?)\s+(\S+)$/i); if(m){const now=new Date(), y=now.getFullYear(); const date=`${y}-${m[2]}-${m[1]}`; out.push({date,time:m[3],league,home:m[4].trim(),away:m[5].trim(),handicap:m[6].trim()});} else if(!/^\d{2}\/\d{2}\s/.test(line)){league=line;} } return out;}
-function liveKey(m){return `${m.date}|${m.time}|${slug(m.home)}|${slug(m.away)}`;}
-function teamLogo(team){return `assets/teams/${slug(team)}.png`;}){
-  const target=normalizeTeamName(team);
-
-  if(!target) return '';
-
-  const entries=Object.entries(state.teamLogos || {});
-
-  // 1. Exact match
-  for(const [name,path] of entries){
-    if(normalizeTeamName(name)===target){
-      return path;
-    }
-  }
-
-  // 2. Partial match
-  for(const [name,path] of entries){
-    const normalized=normalizeTeamName(name);
-
-    if(
-      normalized.includes(target) ||
-      target.includes(normalized)
-    ){
-      return path;
-    }
-  }
-
-  return '';
+function liveKey(m){return `${m.date}|${m.time}|${slug(m.home)}|${slug(m.away)}`;
 }
 function imgWithFallback(src,alt,cls=''){
   const initial=esc(
@@ -256,7 +246,7 @@ state.matches=parseSchedule(txt).map(m=>({
 }));
 
 state.content=content||state.content;
-state.teamLogos=teamLogos||{}; renderAll(); $('#loadState').innerHTML=`<span class="ok">✓ Jadwal berhasil dimuat: ${state.matches.length} pertandingan dari ${PATH.schedule}</span>`;}catch(e){console.error(e);$('#loadState').innerHTML=`<span class="err">GAGAL MEMUAT DATA: ${esc(e.message)}. Pastikan file data ada di GitHub dengan struktur folder yang benar.</span>`; renderAll();}
+state.teamLogos=teamLogoMap; renderAll(); $('#loadState').innerHTML=`<span class="ok">✓ Jadwal berhasil dimuat: ${state.matches.length} pertandingan dari ${PATH.schedule}</span>`;}catch(e){console.error(e);$('#loadState').innerHTML=`<span class="err">GAGAL MEMUAT DATA: ${esc(e.message)}. Pastikan file data ada di GitHub dengan struktur folder yang benar.</span>`; renderAll();}
 }
 function renderAll(){
  $('#matchCount').textContent=state.matches.length; $('#streamCount').textContent=(state.content.streams||[]).length; $('#leagueCount').textContent=new Set(state.matches.map(x=>x.league)).size;
