@@ -1,6 +1,6 @@
 {
-  "Lincoln City": "assets/teams/england_lincoln-city_128x128.football-logos.cc.png",
-  "Thailand": "assets/teams/thailand_128x128.football-logos.cc.png",
-  "Singapore": "assets/teams/singapore_128x128.football-logos.cc.png",
-  "Fenerbahce": "assets/teams/turkey_fenerbahce_128x128.football-logos.cc.png"
+  "Thailand": ["thailand"],
+  "Singapore": ["singapore"],
+  "Lincoln City": ["lincoln city", "lincoln-city"],
+  "Fenerbahce": ["fenerbahce", "fenerbahçe"]
 }
