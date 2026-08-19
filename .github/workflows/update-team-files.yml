@@ -1,0 +1,39 @@
+name: Update team-files.json
+
+on:
+  push:
+    paths:
+      - "MARIOBOLA_PORTAL_FINAL/assets/teams/**"
+      - "MARIOBOLA_PORTAL_FINAL/scripts/generate-team-files.py"
+      - ".github/workflows/update-team-files.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate team-files.json
+        working-directory: MARIOBOLA_PORTAL_FINAL
+        run: python3 scripts/generate-team-files.py
+
+      - name: Commit generated manifest
+        working-directory: MARIOBOLA_PORTAL_FINAL
+        run: |
+          if git diff --quiet -- data/team-files.json; then
+            echo "Tidak ada perubahan pada data/team-files.json"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/team-files.json
+          git commit -m "chore: update team-files.json"
+          git push
