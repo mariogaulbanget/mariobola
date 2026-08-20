@@ -367,37 +367,58 @@ function logoHtml(src, team) {
    field, including values with spaces.
    ========================================================= */
 
-function parseSchedule(text) {
+function parseSchedule(text){
   let league = 'Lainnya';
   const out = [];
 
-  for (const raw of String(text || '').split(/\r?\n/)) {
+  for(const raw of text.split(/\r?\n/)){
     const line = raw.trim();
 
-    if (!line) continue;
+    if(!line) continue;
+
+    /*
+      FORMAT UTAMA:
+
+      20/08 22:00 Kairat Almaty VS RSC Anderlecht | 0:1/2
+
+      Hasil:
+
+      date     = 20/08
+      time     = 22:00
+      home     = Kairat Almaty
+      away     = RSC Anderlecht
+      handicap = 0:1/2
+    */
 
     const match = line.match(
-      /^(\d{2})\/(\d{2})\s+(\d{2}:\d{2})\s+(.+?)\s+VS\s+(.+?)\s+(.+)$/i
+      /^(\d{2})\/(\d{2})\s+(\d{2}:\d{2})\s+(.+?)\s+VS\s+(.+?)\s*\|\s*(.+)$/i
     );
 
-    if (match) {
-      const now = new Date();
-      let year = now.getFullYear();
-      const month = Number(match[2]);
+    if(match){
 
-      if (month === 1 && now.getMonth() === 11) year++;
-      if (month === 12 && now.getMonth() === 0) year--;
+      const now = new Date();
+      const year = now.getFullYear();
+
+      const date = `${year}-${match[2]}-${match[1]}`;
 
       out.push({
-        date: `${year}-${match[2]}-${match[1]}`,
-        time: match[3],
-        league,
+        date,
+        time: match[3].trim(),
+        league: league.trim(),
         home: match[4].trim(),
         away: match[5].trim(),
         handicap: match[6].trim()
       });
-    } else if (!/^\d{2}\/\d{2}\s/.test(line)) {
-      // League header.
+
+      continue;
+    }
+
+    /*
+      Baris yang tidak dimulai tanggal dianggap
+      sebagai nama liga.
+    */
+
+    if(!/^\d{2}\/\d{2}\s/.test(line)){
       league = line;
     }
   }
